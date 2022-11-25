@@ -10,12 +10,31 @@ use Illuminate\Support\Facades\Validator;
 class AccountController extends Controller
 {
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('admin')->except('index');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        if (auth('sanctum')->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => auth('sanctum')->user()
+            ], 202);
+        }
+
         $users =  User::get();
 
         if (count($users) > 0) {
@@ -59,9 +78,7 @@ class AccountController extends Controller
             ], 422);
         }
 
-        $validated = $validator->getData();
-
-        $user = User::create($validated);
+        $user = User::create($validator->getData());
 
         return response()->json([
             'code' => 202,
@@ -121,10 +138,8 @@ class AccountController extends Controller
             ], 422);
         }
 
-        $validated = $validator->getData();
-
         $user = User::find($id);
-        $user->update($validated);
+        $user->update($validator->getData());
 
         return response()->json([
             'code' => 202,
