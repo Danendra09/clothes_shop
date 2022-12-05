@@ -18,13 +18,6 @@ use App\Http\Controllers\Api\TransactionController;
 |
 */
 
-Route::any('/', function() {
-    return response()->json([
-        'author' => 'Benjamin4k',
-        'pawang' => 'Sayang Zooane'
-    ]);
-});
-
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
